@@ -212,10 +212,10 @@ function Decoder(bytes) {
     let data = [];  // Declare data outside of the switch statement
 
     switch (protocol) {
-        case '33':
-            const start_code = byteToHexDecimal(bytes[1]);
-            const meter_type = byteToHexDecimal(bytes[2]);
-            const meter_addr = parseHex(bytes.slice(9, 10)) + parseHex(swap16(bytes.slice(7, 9))) + parseHex(swap32(bytes.slice(3, 7)));
+        case '31':
+            const start_code = byteToHexDecimal(bytes[0]);
+            const meter_type = byteToHexDecimal(bytes[1]);
+            const meter_addr = parseHex(bytes.slice(8, 9)) + parseHex(swap16(bytes.slice(6, 8))) + parseHex(swap32(bytes.slice(2, 6)));
             const control_code = parseHex(bytes.slice(9, 10));
             const data_length = bytes[10];
             const data_id = parseHex(bytes.slice(11, 13));
@@ -227,11 +227,11 @@ function Decoder(bytes) {
             const reverse_cf_unit = parseHex(bytes.slice(24, 25));
             const reverse_cumulative_flow = parseInt(readInt32LE(bytes, 25)).toString('16') / 100;
             const flow_rate_unit = parseHex(bytes.slice(29, 30));
-            const flow_rate = parseInt(readInt32LE(bytes, 17)).toString('16') / 100;
+            const flow_rate = parseInt(readInt32LE(bytes, 30)).toString('16') / 100;
             const temperature = byteToHexDecimal(bytes[35]) + byteToHexDecimal(bytes[34]) / 100;
             const dev_date = parseHex(bytes.slice(40, 41)) + '/' + parseHex(bytes.slice(41, 42)) + '/' + parseHex(swap16(bytes.slice(42, 44))) + " " + parseHex(bytes.slice(39, 40)) + ':' + parseHex(bytes.slice(38, 39)) + ':' + parseHex(bytes.slice(37, 38));
             const time = parseHex(bytes.slice(39, 40)) + ':' + parseHex(bytes.slice(38, 39)) + ':' + parseHex(bytes.slice(37, 38));
-            const alarm = intToBinaryString(bytesToInt(bytes[47],bytes[48])).padStart(16, '0');
+            const alarm = intToBinaryString(bytesToInt(bytes[44],bytes[45])).padStart(16, '0');
             env.log ("Alarm:", alarm)
             const apertura = alarm.charAt(6)+alarm.charAt(7) === '00' ? '100': alarm.charAt(6)+alarm.charAt(7) === '01' ? '0': alarm.charAt(6)+alarm.charAt(7) === '10'? '90': alarm.charAt(6)+alarm.charAt(7) === '11'? 'true': 'false';
             const bateria = alarm.charAt(5) === '0' ? '1' : '2';
